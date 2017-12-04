@@ -1,30 +1,34 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+
+import Button from '../Button/Button';
 
 class Timer extends Component {
 
-   handleStartClick = () => {
-    this.interval = setInterval(() => {
-      this.setState((prevState) => {
-        return {secondsElapsed: prevState.secondsElapsed + 1}
-      })
-    },1000)
-  }
+    handleButtons = (e) => {
+      const btnType = e.target.innerText
 
-  handleStopClick = () => {
-    clearInterval(this.interval);
-    this.setState({lastClearedInterval: this.interval})
-  }
+      if (btnType === "Start") {
+        this.interval = setInterval(() => {
+          this.props.onTimerStart();
+          this.props.onIntervalChange(this.interval);
+        },1000)
+      }
 
-  handleResetClick = () => {
-    this.setState({secondsElapsed: 0, laps: []})
-  }
+      if (btnType === "Stop") {
+        clearInterval(this.interval);
+        this.props.onTimerStop(this.interval);
+      }
 
-  handleLapClick = () => {
-    this.setState((prevState) => {
-      return {laps: prevState.laps.concat([this.state.secondsElapsed])}
-    });
-    console.log(this.state.laps)
-  }
+      if (btnType === "Reset") {
+        this.props.onTimerReset();
+      }
+
+      if (btnType === "Lap") {
+        this.props.onTimerLap();
+      }
+    }
 
    formattedTime = (sec) => {
     const seconds = ('0' + sec % 60).slice(-2);
@@ -34,7 +38,35 @@ class Timer extends Component {
   }
 
   render () {
-    return ()
+    let buttons = this.props.btnTypes.split(" ");
+    return (
+     <div>
+       <h3>{this.formattedTime(this.props.secElapsed)}</h3>
+       {buttons.map(btn => (
+           <Button key={btn} clicked={(btn) => this.handleButtons(btn)}>{btn}</Button>
+       ))}
+     </div>
+    )
   }
 }
-export default Timer;
+
+const mapStateToProps = state => {
+  return {
+    secElapsed: state.secondsElapsed,
+    lastCleredInt: state.lastClearedInterval,
+    laps: state.laps,
+    currInt: state.currentInterval
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTimerStart: () => dispatch({type:"TIMER_START"}),
+    onTimerStop: (lastClearedInterval) => dispatch({type:"TIMER_STOP", lastClearedInterval: lastClearedInterval}),
+    onTimerReset: () => dispatch({type:"TIMER_RESET"}),
+    onTimerLap: () => dispatch({type:"TIMER_LAP"}),
+    onIntervalChange: (currentInterval) => dispatch({type:"INTERVAL_CHANGE", currentInterval: currentInterval})
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Timer);

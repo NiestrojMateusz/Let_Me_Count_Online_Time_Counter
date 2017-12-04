@@ -1,6 +1,7 @@
 const initialState = {
   secondsElapsed: 0,
-  laps: []
+  laps: [],
+  currentInterval: 0
 }
 
 const reducer = (state = initialState, action) => {
@@ -8,7 +9,7 @@ const reducer = (state = initialState, action) => {
     case "TIMER_START":
       return {
         ...state,
-        secondsElapsed: state.secondsElapsed + 1
+        secondsElapsed: state.secondsElapsed + 1,
       }
     case "TIMER_STOP":
       return {
@@ -26,6 +27,11 @@ const reducer = (state = initialState, action) => {
           ...state,
           laps: [...state.laps].concat([state.secondsElapsed])
       }
+      case "INTERVAL_CHANGE":
+        return {
+          ...state,
+          currentInterval: action.currentInterval
+        }
     default:
       return state;
   }
