@@ -11,12 +11,17 @@ class Timer extends Component {
 
       if (btnType === "Start") {
         this.interval = setInterval(() => {
-          this.props.onTimerStart();
+          if (this.props.countdown) {
+            this.props.onCountdownStart();
+          } else {
+            this.props.onTimerStart();
+          }
+
           this.props.onIntervalChange(this.interval);
         },1000)
       }
 
-      if (btnType === "Stop") {
+      if (btnType === "Stop" || btnType === "Pause") {
         clearInterval(this.interval);
         this.props.onTimerStop(this.interval);
       }
@@ -39,6 +44,8 @@ class Timer extends Component {
 
   render () {
     let buttons = this.props.btnTypes.split(" ");
+
+
     return (
      <div>
        <h3>{this.formattedTime(this.props.secElapsed)}</h3>
@@ -55,7 +62,8 @@ const mapStateToProps = state => {
     secElapsed: state.secondsElapsed,
     lastCleredInt: state.lastClearedInterval,
     laps: state.laps,
-    currInt: state.currentInterval
+    currInt: state.currentInterval,
+    countdown: state.countdown
   }
 }
 
@@ -65,7 +73,8 @@ const mapDispatchToProps = dispatch => {
     onTimerStop: (lastClearedInterval) => dispatch({type:"TIMER_STOP", lastClearedInterval: lastClearedInterval}),
     onTimerReset: () => dispatch({type:"TIMER_RESET"}),
     onTimerLap: () => dispatch({type:"TIMER_LAP"}),
-    onIntervalChange: (currentInterval) => dispatch({type:"INTERVAL_CHANGE", currentInterval: currentInterval})
+    onIntervalChange: (currentInterval) => dispatch({type:"INTERVAL_CHANGE", currentInterval: currentInterval}),
+    onCountdownStart: () => dispatch({type:"COUNTDOWN_START"})
   }
 }
 
