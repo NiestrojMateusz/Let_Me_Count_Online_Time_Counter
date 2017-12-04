@@ -1,35 +1,26 @@
 import React, { Component } from 'react';
 import formattedTime from '../../utilities';
+import { connect } from 'react-redux';
 
 class Stopwatch extends Component {
 
-  state = {
-    secondsElapsed: 0,
-    laps: []
-  }
-
   handleStartClick = () => {
     this.interval = setInterval(() => {
-      this.setState((prevState) => {
-        return {secondsElapsed: prevState.secondsElapsed + 1}
-      })
+      this.props.onTimerStart()
     },1000)
   }
 
   handleStopClick = () => {
     clearInterval(this.interval);
-    this.setState({lastClearedInterval: this.interval})
+    this.props.onTimerStop(this.interval);
   }
 
   handleResetClick = () => {
-    this.setState({secondsElapsed: 0, laps: []})
+    this.props.onTimerReset();
   }
 
   handleLapClick = () => {
-    this.setState((prevState) => {
-      return {laps: prevState.laps.concat([this.state.secondsElapsed])}
-    });
-    console.log(this.state.laps)
+    this.props.onTimerLap()
   }
 
   formattedTime(sec) {
@@ -44,17 +35,17 @@ class Stopwatch extends Component {
         lapButton = null,
         resetButton = null
 
-    if (this.state.secondsElapsed === 0 || this.interval === this.state.lastClearedInterval) {
+    if (this.props.secElapsed === 0 || this.interval === this.props.lastCleredInt) {
       button = <button type="button" onClick={this.handleStartClick}>Start</button>
     } else {
       button = <button type="button" onClick={this.handleStopClick}>Stop</button>
     }
 
-    if (this.state.secondsElapsed !== 0 && this.interval !== this.state.lastClearedInterval ) {
+    if (this.props.secElapsed !== 0 && this.interval !== this.props.lastCleredInt ) {
       lapButton = <button type="button" onClick={this.handleLapClick}>Lap</button>
     }
 
-    if (this.state.secondsElapsed !== 0 && this.interval === this.state.lastClearedInterval) {
+    if (this.props.secElapsed !== 0 && this.interval === this.props.lastCleredInt) {
       resetButton = <button type="button" onClick={this.handleResetClick}>Reset</button>
     }
 
@@ -62,12 +53,12 @@ class Stopwatch extends Component {
     return (
       <div>
         <h2>Stopwatch</h2>
-        <h3>{formattedTime(this.state.secondsElapsed)}</h3>
+        <h3>{formattedTime(this.props.secElapsed)}</h3>
         {button}
         {resetButton}
         {lapButton}
         <ul>
-          {this.state.laps.map((lap, i) => {
+          {this.props.laps.map((lap, i) => {
             return <li key={i}><strong>{i + 1}</strong>/ {formattedTime(lap)}</li>
           })}
         </ul>
@@ -75,4 +66,23 @@ class Stopwatch extends Component {
     )
   }
 }
-export default Stopwatch;
+
+const mapStateToProps = state => {
+  return {
+    secElapsed: state.secondsElapsed,
+    lastCleredInt: state.lastClearedInterval,
+    laps: state.laps
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTimerStart: () => dispatch({type:"TIMER_START"}),
+    onTimerStop: (lastClearedInterval) => dispatch({type:"TIMER_STOP", lastClearedInterval: lastClearedInterval}),
+    onTimerReset: () => dispatch({type:"TIMER_RESET"}),
+    onTimerLap: () => dispatch({type:"TIMER_LAP"})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Stopwatch);
