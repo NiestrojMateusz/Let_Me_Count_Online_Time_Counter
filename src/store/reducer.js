@@ -4,8 +4,10 @@ const initialState = {
   currentInterval: 0,
   countdown: false,
   isRunning: false,
-  interval: false,
-  break: false
+  isIntervalTimer: false,
+  break: false,
+  countdownFrom: 60,
+  rounds: 1
 }
 
 const reducer = (state = initialState, action) => {
@@ -25,12 +27,14 @@ const reducer = (state = initialState, action) => {
       case "TIMER_RESET":
         let secElapsed = 0;
         if (state.countdown) {
-          secElapsed = state.countdownFrom || 60
+          secElapsed = state.workDuration || state.countdownFrom || 60
         }
         return {
           ...state,
           secondsElapsed: secElapsed,
-          laps: []
+          laps: [],
+          break: false,
+          numberOfRounds: state.rounds
         }
       case "TIMER_LAP":
         return {
@@ -41,10 +45,11 @@ const reducer = (state = initialState, action) => {
         let currentInterval = action.currentInterval;
         let isRunning = true;
 
-        if (state.countdown && state.secondsElapsed <= 0) {
+        if ( state.countdown && state.secondsElapsed <= 0 ) {
           clearInterval(state.currentInterval);
           isRunning = false
         }
+
         return {
           ...state,
           currentInterval: currentInterval,
@@ -63,6 +68,7 @@ const reducer = (state = initialState, action) => {
         return {
           ...state,
           countdown: true,
+          isIntervalTimer: false,
           secondsElapsed: defaultCountdown
         }
       case "COUNTDOWN_START":
@@ -74,12 +80,63 @@ const reducer = (state = initialState, action) => {
       case "INTERVAL_MOUNT":
         return {
           ...state,
-          interval: true,
-          countdown: true
+          isIntervalTimer: true,
+          countdown: true,
+          secondsElapsed: action.workDuration,
+          workDuration: action.workDuration,
+          breakDuration: action.breakDuration,
+          numberOfRounds: action.numberOfRounds
         }
+      case "FINISHED_COUNT":
+        return {
+          ...state,
+          isRunning: false
+        }
+      case "WORK_DURATION_CHANGE":
+        return {
+          ...state,
+          workDuration: action.workDuration,
+          secondsElapsed: action.workDuration
+        }
+      case "BREAK_DURATION_CHANGE":
+        return {
+          ...state,
+          breakDuration: action.breakDuration
+        }
+      case "ROUNDS_CHANGE":
+        return {
+          ...state,
+          numberOfRounds: action.numberOfRounds,
+          rounds: action.numberOfRounds
+        }
+      case "WORK_ENDS":
+        return {
+          ...state,
+          numberOfRounds: state.numberOfRounds - 1,
+          isRunning: true,
+          secondsElapsed: state.breakDuration,
+          break: true
+      }
+      case "BREAK_ENDS":
+        return {
+          ...state,
+          isRunning: true,
+          secondsElapsed: state.workDuration,
+          break: false
+      }
+      case "INTERVAL_ENDS":
+        return {
+          ...state,
+          isRunning: false,
+          secondsElapsed: state.workDuration,
+          break: false
+      }
     default:
       return state;
   }
 }
 
 export default reducer;
+
+
+

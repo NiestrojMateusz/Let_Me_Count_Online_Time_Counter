@@ -1,5 +1,5 @@
 import React from 'react';
-import formattedTime from '../../utilities';
+import { formattedTime } from '../../utilities';
 import { connect } from 'react-redux';
 import Timer from '../Timer/Timer';
 
@@ -7,18 +7,11 @@ const Stopwatch = (props) => {
 
   let timer = null
 
-  if (props.secElapsed === 0 || props.currInt === props.lastClearedInt) {
-    timer = <Timer btnTypes="Start" />
+  if (props.isRunning || props.currInt === props.lastClearedInt) {
+    timer = <Timer setTime={props.secElapsed} />
+  } else {
+    timer = <Timer setTime="0" />
   }
-
-  if (props.secElapsed !== 0 && props.currInt !== props.lastClearedInt ) {
-    timer = <Timer btnTypes="Stop Lap" />
-  }
-
-  if (props.secElapsed !== 0 && props.currInt === props.lastClearedInt) {
-    timer = <Timer btnTypes="Start Reset" />
-  }
-
 
   return (
     <div>
@@ -38,7 +31,8 @@ const mapStateToProps = state => {
     secElapsed: state.secondsElapsed,
     lastClearedInt: state.lastClearedInterval,
     laps: state.laps,
-    currInt: state.currentInterval
+    currInt: state.currentInterval,
+    isRunning: state.isRunning
   }
 }
 

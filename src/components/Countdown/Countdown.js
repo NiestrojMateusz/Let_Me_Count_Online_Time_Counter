@@ -20,24 +20,15 @@ class Countdown extends Component {
   }
 
   render () {
-    let timer = null;
-    if (!this.props.isRunning || this.props.currInt === this.props.lastClearedInt) {
-      timer = <Timer btnTypes="Start" />
-    }
-
-    if (this.props.isRunning) {
-      timer = <Timer btnTypes="Pause" />
-    }
-
-  if (this.props.secElapsed === 0 ||  this.props.currInt === this.props.lastClearedInt) {
-    timer = <Timer btnTypes="Start Reset" />
-  }
-
     return (
       <div>
         <h1>Countdown Timer</h1>
-        <TimePicker defaultValue={moment("00:01:00", "HH:mm:ss")} minuteStep={1} onChange={this.handleValueChange} showHour={false} />
-        {timer}
+        {!this.props.isRunning
+         ? <TimePicker defaultValue={moment("00:01:00", "HH:mm:ss")} minuteStep={1} onChange={this.handleValueChange} showHour={false} />
+        : null
+        }
+
+        <Timer setTime={this.props.secElapsed} />
       </div>
 
     )

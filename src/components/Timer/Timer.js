@@ -6,49 +6,80 @@ import Button from '../Button/Button';
 
 class Timer extends Component {
 
-    handleButtons = (e) => {
-      const btnType = e.target.innerText
+  componentWillReceiveProps(nextProps) {
+    if (this.props.isRunning !== nextProps.isRunning) {
 
-      if (btnType === "Start") {
-        this.interval = setInterval(() => {
-          if (this.props.countdown) {
-            this.props.onCountdownStart();
-          } else {
-            this.props.onTimerStart();
+     if (!this.props.countdown) {
+        if (!nextProps.isRunning && nextProps.secElapsed === 0 ) {
+          this.buttons = "Start";
+        }
+
+        if (nextProps.secElapsed !== 0 && this.props.currInt !== nextProps.lastClearedInt ) {
+          this.buttons = "Stop Lap";
+        }
+
+        if (!nextProps.isRunning && nextProps.secElapsed !== 0) {
+          this.buttons = "Start Reset";
+        }
+      } else {
+          if (nextProps.secElapsed !== 0 && this.props.currInt !== nextProps.lastClearedInt ) {
+              this.buttons = "Stop Reset";
           }
 
-          this.props.onIntervalChange(this.interval);
-        },1000)
+          if (!nextProps.isRunning) {
+            this.buttons = "Start Reset";
+          }
       }
+    }
+  }
 
-      if (btnType === "Stop" || btnType === "Pause") {
-        clearInterval(this.interval);
-        this.props.onTimerStop(this.interval);
-      }
+  handleButtons = (e) => {
+    const btnType = e.target.innerText
 
-      if (btnType === "Reset") {
-        this.props.onTimerReset();
-      }
+    if (btnType === "Start") {
+      this.interval = setInterval(() => {
+        if (this.props.countdown) {
+          this.props.onCountdownStart();
+        } else {
+          this.props.onTimerStart();
+        }
 
-      if (btnType === "Lap") {
-        this.props.onTimerLap();
+        this.props.onIntervalChange(this.interval);
+      },1000)
+    }
+
+    if (btnType === "Stop" || btnType === "Pause") {
+      clearInterval(this.interval);
+      this.props.onTimerStop(this.interval);
+    }
+
+    if (btnType === "Reset") {
+      this.props.onTimerReset();
+      if (!this.props.isRunning) {
+        this.buttons = "Start"
       }
     }
 
-   formattedTime = (sec) => {
+    if (btnType === "Lap") {
+      this.props.onTimerLap();
+    }
+  }
+
+  formattedTime = (sec) => {
+    sec = parseInt(sec, 10);
     const seconds = ('0' + sec % 60).slice(-2);
     const minutes = ("0" + Math.floor(sec / 60)).slice(-2);
 
     return minutes + ':' + seconds;
   }
 
+  buttons = "Start";
+
   render () {
-    let buttons = this.props.btnTypes.split(" ");
-
-
+    let buttons = this.buttons.split(" ");
     return (
      <div>
-       <h3>{this.formattedTime(this.props.secElapsed)}</h3>
+       <h3>{this.formattedTime(this.props.setTime)}</h3>
        {buttons.map(btn => (
            <Button key={btn} clicked={(btn) => this.handleButtons(btn)}>{btn}</Button>
        ))}
@@ -63,7 +94,8 @@ const mapStateToProps = state => {
     lastCleredInt: state.lastClearedInterval,
     laps: state.laps,
     currInt: state.currentInterval,
-    countdown: state.countdown
+    countdown: state.countdown,
+    isRunning: state.isRunning
   }
 }
 
