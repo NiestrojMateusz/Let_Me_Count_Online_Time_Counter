@@ -11,7 +11,7 @@ const TimerChooser = (props) => (
       <li><Link to="/countdown">Countdown</Link></li>
       <li><Link to="/">EMOM</Link></li>
       <li><Link to="/">Tabata</Link></li>
-      <li><Link to="/">Interval</Link></li>
+      <li><Link to="/interval">Interval</Link></li>
       <li><Link to="/">Pomodoro</Link></li>
     </ul>
   </div>

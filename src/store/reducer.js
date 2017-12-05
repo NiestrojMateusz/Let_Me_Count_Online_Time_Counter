@@ -3,7 +3,9 @@ const initialState = {
   laps: [],
   currentInterval: 0,
   countdown: false,
-  isRunning: false
+  isRunning: false,
+  interval: false,
+  break: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -68,6 +70,12 @@ const reducer = (state = initialState, action) => {
           ...state,
           secondsElapsed: state.secondsElapsed - 1,
           isRunning: true
+        }
+      case "INTERVAL_MOUNT":
+        return {
+          ...state,
+          interval: true,
+          countdown: true
         }
     default:
       return state;
