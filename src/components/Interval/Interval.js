@@ -5,7 +5,7 @@ import moment from 'moment';
 import 'rc-time-picker/assets/index.css';
 import TimePicker from 'rc-time-picker';
 import Timer from '../Timer/Timer';
-import { formatPickerVals } from '../../utilities'
+import { formatPickerVals} from '../../utilities'
 import Aux from '../../hoc/Auxilary';
 
 
@@ -13,7 +13,7 @@ import Aux from '../../hoc/Auxilary';
 class Interval extends Component {
 
   componentDidMount() {
-    this.props.onIntervalMount(5,3,1);
+    this.props.onIntervalMount(this.props.defaultWorkDuration,this.props.defaultBreakDuration,this.props.defaultRounds);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,8 +52,12 @@ class Interval extends Component {
     if (!this.props.isRunning) {
       layout = (
         <Aux>
-          <span>Work: </span><TimePicker defaultValue={moment("00:01:00", "HH:mm:ss")} minuteStep={1} onChange={this.handleWorkValueChange} showHour={false} />
-          <span>Rest</span><TimePicker defaultValue={moment("00:00:20", "HH:mm:ss")} minuteStep={1} onChange={this.handleRestValueChange} showHour={false}/>
+          <span>Work: </span><TimePicker
+            // placeholder={formattedTime(this.props.defaultWorkDuration)}
+            minuteStep={1} onChange={this.handleWorkValueChange}
+            defaultValue={moment(`00:01:00`, "HH:mm:ss")}
+            showHour={false} />
+          <span>Rest</span><TimePicker defaultValue={moment("00:00:10", "HH:mm:ss")} minuteStep={1} onChange={this.handleRestValueChange} showHour={false}/>
           <span>Rounds</span><TimePicker defaultValue={moment("00:00:01", "HH:mm:ss")} minuteStep={1} onChange={this.handleRoundsValueChange} showHour={false} showMinute={false}/>
         </Aux>
       )
@@ -70,7 +74,7 @@ class Interval extends Component {
     }
     return (
       <div>
-        <h2>Interval Timer</h2>
+        <h2>{this.props.intervalTitle}</h2>
         {layout}
         <Timer setTime={this.props.secElapsed} />
       </div>

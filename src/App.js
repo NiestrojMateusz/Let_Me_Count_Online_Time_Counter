@@ -13,7 +13,13 @@ class App extends Component {
     return (
       <div className="App">
         <Switch>
-          <Route path="/interval" component={Interval} />
+          <Route path="/interval" render={(props) => (
+            <Interval
+              defaultWorkDuration={60}
+              defaultBreakDuration={10}
+              defaultRounds={1}
+              intervalTitle="Interval Timer"/>
+          )}/>
           <Route path="/stopwatch" component={Stopwatch} />
           <Route path="/countdown" component={Countdown} />
           <Route exact path="/" component={TimerChooser} />
