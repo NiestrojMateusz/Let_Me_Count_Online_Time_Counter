@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router'
 
 import moment from 'moment';
 import 'rc-time-picker/assets/index.css';
@@ -12,8 +13,16 @@ import Aux from '../../hoc/Auxilary';
 
 class Interval extends Component {
 
+  componentWillMount() {
+    const query = new URLSearchParams(this.props.location.search);
+    this.defaultsValues = {}
+    for (let param of query.entries()) {
+      this.defaultsValues[param[0]] = param[1];
+    }
+  }
+
   componentDidMount() {
-    this.props.onIntervalMount(this.props.defaultWorkDuration,this.props.defaultBreakDuration,this.props.defaultRounds);
+    this.props.onIntervalMount(this.defaultsValues.workDuration,this.defaultsValues.breakDuration,this.defaultsValues.rounds);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -74,7 +83,7 @@ class Interval extends Component {
     }
     return (
       <div>
-        <h2>{this.props.intervalTitle}</h2>
+        <h2>{this.defaultsValues.title}</h2>
         {layout}
         <Timer setTime={this.props.secElapsed} />
       </div>
@@ -109,4 +118,4 @@ const mapDispatchToPropos = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToPropos)(Interval);
+export default withRouter(connect(mapStateToProps, mapDispatchToPropos)(Interval));

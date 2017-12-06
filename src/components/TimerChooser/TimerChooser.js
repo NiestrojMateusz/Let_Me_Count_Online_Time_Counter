@@ -10,9 +10,18 @@ const TimerChooser = (props) => (
       <li><Link to="/stopwatch">Stopwatch</Link></li>
       <li><Link to="/countdown">Countdown</Link></li>
       <li><Link to="/">EMOM</Link></li>
-      <li><Link to="/">Tabata</Link></li>
-      <li><Link to="/interval">Interval</Link></li>
-      <li><Link to="/pomodoro">Pomodoro</Link></li>
+      <li><Link to={{
+        pathname: '/interval',
+        search: `?workDuration=${20}&breakDuration=${10}&rounds=8&title=Pomodoro%20Timer`
+      }}>Tabata</Link></li>
+      <li><Link to={{
+        pathname: '/interval',
+        search: '?workDuration=60&breakDuration=20&rounds=1&title=Interval%20Timer'
+      }}>Interval</Link></li>
+      <li><Link to={{
+        pathname: '/interval',
+        search: `?workDuration=${25*60}&breakDuration=${5*60}&rounds=1&title=Pomodoro%20Timer`
+      }}>Pomodoro</Link></li>
     </ul>
   </div>
 );
