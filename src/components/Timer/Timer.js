@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 
 import Button from '../Button/Button';
 
+var audioTick = new Audio('http://soundbible.com/mp3/Tick-DeepFrozenApps-397275646.mp3');
+var alarm = new Audio('http://soundbible.com/mp3/Ship_Bell-Mike_Koenig-1911209136.mp3');
+
 class Timer extends Component {
 
   componentWillReceiveProps(nextProps) {
@@ -27,8 +30,11 @@ class Timer extends Component {
           }
 
           if (!nextProps.isRunning) {
+            alarm.play();
             this.buttons = "Start Reset";
           }
+
+
       }
     }
   }
@@ -43,6 +49,8 @@ class Timer extends Component {
         } else {
           this.props.onTimerStart();
         }
+
+
 
         this.props.onIntervalChange(this.interval);
       },1000)
@@ -76,6 +84,10 @@ class Timer extends Component {
   buttons = "Start";
 
   render () {
+    if (this.props.isRunning && this.props.countdown && this.props.secElapsed <= 3 && this.props.secElapsed > 0) {
+      audioTick.play();
+    }
+
     let buttons = this.buttons.split(" ");
     return (
      <div>
