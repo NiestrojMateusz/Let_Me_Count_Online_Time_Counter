@@ -73,7 +73,7 @@ class Interval extends Component {
     } else {
       layout = (
         <Aux>
-          <h2>Round {this.roundCounter}</h2>
+          <h2>Round {this.roundCounter} / {this.props.rounds}</h2>
           {this.props.break
             ? <h3>Break</h3>
             : <h3>Work!</h3>
@@ -94,15 +94,12 @@ class Interval extends Component {
 const mapStateToProps = state => {
   return {
     secElapsed: state.secondsElapsed,
-    lastClearedInt: state.lastClearedInterval,
-    laps: state.laps,
-    currInt: state.currentInterval,
-    countFrom: state.countdownFrom,
     workDuration: state.workDuration,
     breakDuration: state.breakDuration,
     break: state.break,
     numberOfRounds: state.numberOfRounds,
-    isRunning: state.isRunning
+    isRunning: state.isRunning,
+    rounds: state.rounds
   }
 }
 

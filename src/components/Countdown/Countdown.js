@@ -38,9 +38,6 @@ class Countdown extends Component {
 const mapStateToProps = state => {
   return {
     secElapsed: state.secondsElapsed,
-    lastClearedInt: state.lastClearedInterval,
-    laps: state.laps,
-    currInt: state.currentInterval,
     isRunning: state.isRunning
   }
 }
