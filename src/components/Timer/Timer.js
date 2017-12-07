@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-
 import Button from '../Button/Button';
 
 var audioTick = new Audio('http://soundbible.com/mp3/Tick-DeepFrozenApps-397275646.mp3');
@@ -30,12 +29,12 @@ class Timer extends Component {
           }
 
           if (!nextProps.isRunning) {
-            alarm.play();
             this.buttons = "Start Reset";
           }
-
-
       }
+    }
+    if (nextProps.secElapsed === 0 || (nextProps.secElapsed > this.props.secElapsed && nextProps.isRunning)) {
+      alarm.play();
     }
   }
 
